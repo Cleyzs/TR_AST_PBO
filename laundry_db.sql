@@ -70,7 +70,7 @@ INSERT INTO `tb_layanan` (`id_layanan`, `nama_layanan`, `harga`, `jenis_satuan`,
 ('LYN005', 'Cuci Bed Cover Besar', 25000, 'Pcs', 72),
 ('LYN006', 'Cuci Sepatu / Tas', 30000, 'Pcs', 48);
 
--- --------------------------------------------------------
+-- -------------------------------------------------------
 
 --
 -- Table structure for table `tb_pesanan`
