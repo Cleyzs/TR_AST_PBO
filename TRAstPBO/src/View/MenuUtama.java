@@ -17,6 +17,22 @@ public class MenuUtama extends javax.swing.JFrame {
      */
     public MenuUtama() {
         initComponents();
+
+        // == BIAR KONTEN IKUT MELEBAR SAAT JENDELA DIPERBESAR ==
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+        getContentPane().add(panelSidebar, java.awt.BorderLayout.WEST);
+        getContentPane().add(panelKonten, java.awt.BorderLayout.CENTER);
+
+        panelKonten.removeAll();
+        panelKonten.setLayout(new java.awt.BorderLayout());
+        panelKonten.add(kartu, java.awt.BorderLayout.CENTER);
+
+        panelKonten.setPreferredSize(null);
+        kartu.setPreferredSize(null);
+        panelSidebar.setPreferredSize(new java.awt.Dimension(210, 0));
+        // =====================================================
+
         cardLayout = (java.awt.CardLayout) kartu.getLayout();
         tampilkanKartu("beranda");
         kartu.add(new FormLayanan(), "formLayanan");
@@ -26,6 +42,9 @@ public class MenuUtama extends javax.swing.JFrame {
         kartu.add(new DaftarPesanan(), "daftarPesanan");
         kartu.add(new RiwayatPelanggan(), "riwayatPelanggan");
         kartu.add(new LaporanPendapatan(), "laporanPendapatan");
+
+        // Buka langsung dalam keadaan maksimal (full screen)
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -61,14 +80,6 @@ public class MenuUtama extends javax.swing.JFrame {
         beranda = new javax.swing.JPanel();
         judulBeranda = new javax.swing.JLabel();
         subJudul = new javax.swing.JLabel();
-        kartuHariIni = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        kartuDicuci = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        kartuSiap = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        kartuOmzet = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
         kartuTerbaru = new javax.swing.JPanel();
         judulTerbaru = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -78,7 +89,6 @@ public class MenuUtama extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 242));
         setFocusCycleRoot(false);
         setMinimumSize(new java.awt.Dimension(960, 600));
-        setPreferredSize(new java.awt.Dimension(960, 600));
 
         panelSidebar.setBackground(new java.awt.Color(160, 216, 239));
         panelSidebar.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 14, 18, 14));
@@ -319,94 +329,6 @@ public class MenuUtama extends javax.swing.JFrame {
         subJudul.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 18, 0));
         subJudul.setMaximumSize(new java.awt.Dimension(32767, 24));
 
-        kartuHariIni.setBackground(new java.awt.Color(160, 216, 239));
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setText("Pesanan Hari Ini");
-
-        javax.swing.GroupLayout kartuHariIniLayout = new javax.swing.GroupLayout(kartuHariIni);
-        kartuHariIni.setLayout(kartuHariIniLayout);
-        kartuHariIniLayout.setHorizontalGroup(
-            kartuHariIniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuHariIniLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                .addGap(20, 20, 20))
-        );
-        kartuHariIniLayout.setVerticalGroup(
-            kartuHariIniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuHariIniLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-
-        kartuDicuci.setBackground(new java.awt.Color(160, 216, 239));
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setText("Sedang Dicuci");
-
-        javax.swing.GroupLayout kartuDicuciLayout = new javax.swing.GroupLayout(kartuDicuci);
-        kartuDicuci.setLayout(kartuDicuciLayout);
-        kartuDicuciLayout.setHorizontalGroup(
-            kartuDicuciLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kartuDicuciLayout.createSequentialGroup()
-                .addContainerGap(60, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(53, 53, 53))
-        );
-        kartuDicuciLayout.setVerticalGroup(
-            kartuDicuciLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuDicuciLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-
-        kartuSiap.setBackground(new java.awt.Color(160, 216, 239));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel3.setText("Siap Diambil");
-
-        javax.swing.GroupLayout kartuSiapLayout = new javax.swing.GroupLayout(kartuSiap);
-        kartuSiap.setLayout(kartuSiapLayout);
-        kartuSiapLayout.setHorizontalGroup(
-            kartuSiapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuSiapLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(jLabel3)
-                .addContainerGap(80, Short.MAX_VALUE))
-        );
-        kartuSiapLayout.setVerticalGroup(
-            kartuSiapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuSiapLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-
-        kartuOmzet.setBackground(new java.awt.Color(160, 216, 239));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel4.setText("Omzet Hari Ini");
-
-        javax.swing.GroupLayout kartuOmzetLayout = new javax.swing.GroupLayout(kartuOmzet);
-        kartuOmzet.setLayout(kartuOmzetLayout);
-        kartuOmzetLayout.setHorizontalGroup(
-            kartuOmzetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuOmzetLayout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jLabel4)
-                .addContainerGap(75, Short.MAX_VALUE))
-        );
-        kartuOmzetLayout.setVerticalGroup(
-            kartuOmzetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kartuOmzetLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-
         kartuTerbaru.setBackground(new java.awt.Color(255, 255, 255));
 
         judulTerbaru.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
@@ -429,7 +351,7 @@ public class MenuUtama extends javax.swing.JFrame {
         kartuTerbaru.setLayout(kartuTerbaruLayout);
         kartuTerbaruLayout.setHorizontalGroup(
             kartuTerbaruLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
             .addGroup(kartuTerbaruLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(judulTerbaru)
@@ -441,7 +363,7 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addComponent(judulTerbaru)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout berandaLayout = new javax.swing.GroupLayout(beranda);
@@ -454,16 +376,7 @@ public class MenuUtama extends javax.swing.JFrame {
                     .addComponent(subJudul, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(berandaLayout.createSequentialGroup()
-                .addGroup(berandaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(berandaLayout.createSequentialGroup()
-                        .addComponent(kartuHariIni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(kartuDicuci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
-                        .addComponent(kartuSiap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                        .addComponent(kartuOmzet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(kartuTerbaru, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(kartuTerbaru, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         berandaLayout.setVerticalGroup(
@@ -472,14 +385,8 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addComponent(judulBeranda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(subJudul, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addGroup(berandaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(kartuHariIni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(kartuDicuci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(kartuSiap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(kartuOmzet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                .addComponent(kartuTerbaru, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(kartuTerbaru, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -626,20 +533,12 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JPanel formPegawai;
     private javax.swing.JPanel formPelanggan;
     private javax.swing.JPanel formPesanan;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel judulBeranda;
     private javax.swing.JLabel judulSidebar;
     private javax.swing.JLabel judulTerbaru;
     private javax.swing.JPanel kartu;
-    private javax.swing.JPanel kartuDicuci;
-    private javax.swing.JPanel kartuHariIni;
-    private javax.swing.JPanel kartuOmzet;
-    private javax.swing.JPanel kartuSiap;
     private javax.swing.JPanel kartuTerbaru;
     private javax.swing.JPanel laporanPendapatan;
     private javax.swing.JButton menuDaftarPesanan;

@@ -45,7 +45,7 @@
                   <Component id="kartuTabel" max="32767" attributes="0"/>
                   <Component id="kartuForm" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="21" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -62,7 +62,7 @@
     <Container class="javax.swing.JPanel" name="kartuForm">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+          <Color blue="ef" green="d8" red="a0" type="rgb"/>
         </Property>
       </Properties>
 
@@ -262,7 +262,7 @@
     <Container class="javax.swing.JPanel" name="kartuTabel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+          <Color blue="ef" green="d8" red="a0" type="rgb"/>
         </Property>
       </Properties>
 

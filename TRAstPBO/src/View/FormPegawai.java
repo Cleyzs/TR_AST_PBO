@@ -57,7 +57,7 @@ public class FormPegawai extends javax.swing.JPanel {
         judulHalaman.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         judulHalaman.setText("Pegawai");
 
-        kartuForm.setBackground(new java.awt.Color(255, 255, 255));
+        kartuForm.setBackground(new java.awt.Color(160, 216, 239));
 
         judulForm.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         judulForm.setText("Form Pegawai");
@@ -166,7 +166,7 @@ public class FormPegawai extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        kartuTabel.setBackground(new java.awt.Color(255, 255, 255));
+        kartuTabel.setBackground(new java.awt.Color(160, 216, 239));
 
         fieldCari.setBackground(new java.awt.Color(255, 255, 242));
         fieldCari.addActionListener(this::fieldCariActionPerformed);
@@ -246,7 +246,7 @@ public class FormPegawai extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(kartuTabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(kartuForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     private void tombolSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolSimpanActionPerformed

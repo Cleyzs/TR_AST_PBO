@@ -53,7 +53,7 @@ public class FormPelanggan extends javax.swing.JPanel {
         judulHalaman.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         judulHalaman.setText("Pelanggan");
 
-        kartuForm.setBackground(new java.awt.Color(255, 255, 255));
+        kartuForm.setBackground(new java.awt.Color(160, 216, 239));
 
         judulForm.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         judulForm.setText("Form Pelanggan");
@@ -144,7 +144,7 @@ public class FormPelanggan extends javax.swing.JPanel {
                 .addGap(24, 24, 24))
         );
 
-        kartuTabel.setBackground(new java.awt.Color(255, 255, 255));
+        kartuTabel.setBackground(new java.awt.Color(160, 216, 239));
 
         fieldCari.setBackground(new java.awt.Color(255, 255, 242));
         fieldCari.addActionListener(this::fieldCariActionPerformed);

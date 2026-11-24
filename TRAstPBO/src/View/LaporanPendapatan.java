@@ -49,7 +49,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
         judulHalaman.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         judulHalaman.setText("Laporan Pendapatan");
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(160, 216, 239));
 
         labelDari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         labelDari.setText("Dari");
@@ -74,7 +74,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(66, 66, 66)
+                .addGap(48, 48, 48)
                 .addComponent(labelDari)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spinnerDari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -82,7 +82,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
                 .addComponent(labelSampai)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spinnerSampai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 378, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tombolTampilkan)
                 .addGap(18, 18, 18)
                 .addComponent(tombolExcel)
@@ -92,10 +92,9 @@ public class LaporanPendapatan extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(21, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(tombolTampilkan, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(tombolExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tombolTampilkan, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tombolExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(labelDari)
                         .addComponent(spinnerDari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -104,7 +103,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
                 .addGap(22, 22, 22))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(160, 216, 239));
 
         labelTotalPendapatan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         labelTotalPendapatan.setText("Total Pendapatan");
@@ -133,7 +132,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        kartuTabel.setBackground(new java.awt.Color(255, 255, 255));
+        kartuTabel.setBackground(new java.awt.Color(160, 216, 239));
 
         judulTabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         judulTabel.setText("Rincian Pendapatan");
@@ -158,10 +157,8 @@ public class LaporanPendapatan extends javax.swing.JPanel {
             .addGroup(kartuTabelLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(judulTabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(kartuTabelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
+                .addContainerGap(896, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         kartuTabelLayout.setVerticalGroup(
             kartuTabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,7 +180,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(kartuTabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

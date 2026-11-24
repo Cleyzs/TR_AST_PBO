@@ -50,7 +50,7 @@ public class FormPesanan extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 242));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(160, 216, 239));
 
         judulForm.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         judulForm.setText("Data Pesanan");
@@ -147,7 +147,7 @@ public class FormPesanan extends javax.swing.JPanel {
                 .addContainerGap(119, Short.MAX_VALUE))
         );
 
-        kartuKanan.setBackground(new java.awt.Color(255, 255, 255));
+        kartuKanan.setBackground(new java.awt.Color(160, 216, 239));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         jLabel7.setText("Ringkasan Nota");
