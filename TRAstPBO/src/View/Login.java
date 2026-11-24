@@ -17,6 +17,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        
     }
 
     /**
@@ -28,66 +29,177 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        panelKiri = new javax.swing.JPanel();
+        lbl = new javax.swing.JLabel();
+        lbl1 = new javax.swing.JLabel();
+        panelKanan = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        lblMasuk = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        fieldUsername = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        fieldPassword = new javax.swing.JPasswordField();
+        tombolMasuk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Login - Sistem Manajemen Laundry");
+        setPreferredSize(new java.awt.Dimension(960, 600));
+        setResizable(false);
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Login");
+        panelKiri.setBackground(new java.awt.Color(160, 216, 239));
+        panelKiri.setPreferredSize(new java.awt.Dimension(440, 600));
 
-        jTextField1.setText("Username");
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
+        lbl.setFont(new java.awt.Font("Segoe UI", 1, 32)); // NOI18N
+        lbl.setText("Laundry");
 
-        jPasswordField1.setText("jPasswordField1");
+        lbl1.setFont(new java.awt.Font("Segoe UI", 1, 32)); // NOI18N
+        lbl1.setText("Sistem Manajemen");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(156, 156, 156)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(163, 163, 163))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(154, 154, 154))))
+        javax.swing.GroupLayout panelKiriLayout = new javax.swing.GroupLayout(panelKiri);
+        panelKiri.setLayout(panelKiriLayout);
+        panelKiriLayout.setHorizontalGroup(
+            panelKiriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelKiriLayout.createSequentialGroup()
+                .addContainerGap(87, Short.MAX_VALUE)
+                .addGroup(panelKiriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl)
+                    .addComponent(lbl1))
+                .addGap(66, 66, 66))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(74, 74, 74)
+        panelKiriLayout.setVerticalGroup(
+            panelKiriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelKiriLayout.createSequentialGroup()
+                .addContainerGap(234, Short.MAX_VALUE)
+                .addComponent(lbl1)
+                .addGap(18, 18, 18)
+                .addComponent(lbl)
+                .addGap(262, 262, 262))
+        );
+
+        getContentPane().add(panelKiri, java.awt.BorderLayout.LINE_START);
+
+        panelKanan.setBackground(new java.awt.Color(255, 255, 242));
+        panelKanan.setLayout(new java.awt.GridBagLayout());
+
+        jPanel2.setOpaque(false);
+        jPanel2.setPreferredSize(new java.awt.Dimension(320, 340));
+
+        lblMasuk.setFont(new java.awt.Font("Segoe UI", 1, 26)); // NOI18N
+        lblMasuk.setForeground(new java.awt.Color(31, 70, 80));
+        lblMasuk.setText("Masuk Admin");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setText("Username");
+
+        fieldUsername.addActionListener(this::fieldUsernameActionPerformed);
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Password");
+
+        fieldPassword.setPreferredSize(new java.awt.Dimension(73, 22));
+        fieldPassword.addActionListener(this::fieldPasswordActionPerformed);
+
+        tombolMasuk.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        tombolMasuk.setText("Masuk");
+        tombolMasuk.addActionListener(this::tombolMasukActionPerformed);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(112, Short.MAX_VALUE)
+                .addComponent(tombolMasuk, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(104, 104, 104))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMasuk, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fieldUsername, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                    .addComponent(fieldPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblMasuk)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addComponent(fieldUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addComponent(tombolMasuk, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
         );
 
+        panelKanan.add(jPanel2, new java.awt.GridBagConstraints());
+
+        getContentPane().add(panelKanan, java.awt.BorderLayout.CENTER);
+
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // ===== Tambahan manual: jangan taruh di dalam blok Generated Code =====
+
+    // CATATAN CONTROLLER: tambahkan field PegawaiController di sini setelah tersedia.
+    // private final Controller.PegawaiController controller =
+    //         new Controller.PegawaiController();
+
+    public String getUsername() {
+        return fieldUsername.getText().trim();
+    }
+
+    public String getPassword() {
+        return new String(fieldPassword.getPassword());
+    }
+
+    public void tampilkanPesan(String pesan) {
+        javax.swing.JOptionPane.showMessageDialog(this, pesan, "Informasi",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void tampilkanError(String pesan) {
+        javax.swing.JOptionPane.showMessageDialog(this, pesan, "Login Gagal",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void kosongkanForm() {
+        fieldUsername.setText("");
+        fieldPassword.setText("");
+        fieldUsername.requestFocusInWindow();
+    }
+
+    private void prosesLogin() {
+        // CATATAN CONTROLLER: login harus dicek lewat controller.login(username, password).
+        // Model.Pegawai pegawai = controller.login(getUsername(), getPassword());
+        // if (pegawai == null) { tampilkanError("Username atau password salah."); return; }
+        // new MenuUtama().setVisible(true);
+        // this.dispose();
+        new MenuUtama().setVisible(true);
+        this.dispose();
+    }
+    
+    private void fieldUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldUsernameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_fieldUsernameActionPerformed
+
+    private void tombolMasukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolMasukActionPerformed
+        // TODO add your handling code here:
+        prosesLogin();
+    }//GEN-LAST:event_tombolMasukActionPerformed
+
+    private void fieldPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldPasswordActionPerformed
+        // TODO add your handling code here:
+        tombolMasuk.doClick();
+    }//GEN-LAST:event_fieldPasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -115,9 +227,16 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPasswordField fieldPassword;
+    private javax.swing.JTextField fieldUsername;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lbl;
+    private javax.swing.JLabel lbl1;
+    private javax.swing.JLabel lblMasuk;
+    private javax.swing.JPanel panelKanan;
+    private javax.swing.JPanel panelKiri;
+    private javax.swing.JButton tombolMasuk;
     // End of variables declaration//GEN-END:variables
 }
