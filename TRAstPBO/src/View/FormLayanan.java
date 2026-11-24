@@ -13,10 +13,67 @@ public class FormLayanan extends javax.swing.JPanel {
     /**
      * Creates new form FormLayanan
      */
-    public FormLayanan() {
-        initComponents();
-        // CATATAN CONTROLLER: panggil refreshTabel() setelah Controller tersedia.
+   public FormLayanan() {
+    initComponents();
+    perbaikiLayout();   // <- baris baru
+    // CATATAN CONTROLLER: panggil refreshTabel() setelah Controller tersedia.
+}
+       private void perbaikiLayout() {
+        // Layout dalam kartuTabel: scrollTabel boleh melar ke bawah
+        javax.swing.GroupLayout kartuTabelLayout = new javax.swing.GroupLayout(kartuTabel);
+        kartuTabel.setLayout(kartuTabelLayout);
+        kartuTabelLayout.setHorizontalGroup(
+            kartuTabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(kartuTabelLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fieldCari, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
+            .addComponent(scrollTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+        );
+        kartuTabelLayout.setVerticalGroup(
+            kartuTabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(kartuTabelLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(kartuTabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fieldCari, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel1))
+                .addGap(18, 18, 18)
+                .addComponent(scrollTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+        );
+
+        // Layout utama: kartuForm fixed, kartuTabel melar
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(judulHalaman)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(kartuForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52)
+                        .addComponent(kartuTabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(30, 30, 30))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(judulHalaman)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(kartuForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(kartuTabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(27, 27, 27))
+        );
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
