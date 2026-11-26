@@ -12,7 +12,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
- * Controller Pegawai: penghubung View (Login, FormPegawai) dengan PegawaiDAO.
+ * Controller Pegawai: penghubung View (Login, FormPegawai) dengan PegawaiDAO
  *
  * Urutan Object[] dari FormPegawai.getDataForm():
  *   [0] nama, [1] username (= id_pegawai), [2] password, [3] telepon, [4] jabatan
