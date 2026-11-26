@@ -18,6 +18,7 @@ public class FormPegawai extends javax.swing.JPanel {
     public FormPegawai() {
     initComponents();
     perbaikiLayout();   // <- baris baru
+    refreshTabel();
 }
         private void perbaikiLayout() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -305,6 +306,8 @@ public class FormPegawai extends javax.swing.JPanel {
     // private final Controller.PegawaiController controller =
     //         new Controller.PegawaiController();
 
+    private final Controller.PegawaiController controller = new Controller.PegawaiController();
+    
     public Object[] getDataForm() {
         return new Object[]{fieldNama.getText().trim(), fieldUsername.getText().trim(),
             new String(fieldPassword.getPassword()), fieldTelepon.getText().trim(),
@@ -353,33 +356,65 @@ public class FormPegawai extends javax.swing.JPanel {
 
     // CATATAN CONTROLLER: refreshTabel() harus mengisi dari controller.semua().
     private void refreshTabel() {
-        setDataTabel(new Object[0][0]);
+        isiTabel(controller.semua());
     }
 
+    private void isiTabel(java.util.List<Model.Pegawai> list) {
+        Object[][] data = new Object[list.size()][5];
+        for (int i = 0; i < list.size(); i++) {
+            Model.Pegawai p = list.get(i);
+            // kolom: ID (no urut), Nama, Username (= id_pegawai), Telepon (tidak ada di DB), Jabatan
+            data[i] = new Object[]{i + 1, p.getNamaPegawai(), p.getIdPegawai(), "-", p.getJabatan()};
+        }
+        setDataTabel(data);
+    }
+    
     // CATATAN CONTROLLER: simpan() -> controller.tambah(getDataForm()).
     private void simpan() {
+        controller.tambah(getDataForm());
         kosongkanForm();
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Tombol Simpan ditekan. Controller belum tersedia.");
+        refreshTabel();
+
     }
 
     // CATATAN CONTROLLER: edit() -> controller.ubah(getDataForm()).
     private void edit() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Tombol Ubah ditekan. Controller belum tersedia.");
+        controller.ubah(getDataForm());
+        refreshTabel();
+
     }
 
     // CATATAN CONTROLLER: hapus() -> controller.hapus(id).
     private void hapus() {
+    int b = tabel.getSelectedRow();
+        String id = (b >= 0) ? String.valueOf(tabel.getValueAt(b, 2)) : fieldUsername.getText().trim();
+        if (id.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih pegawai yang akan dihapus.");
+            return;
+        }
+        int ok = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Hapus pegawai '" + id + "'?", "Konfirmasi", javax.swing.JOptionPane.YES_NO_OPTION);
+        if (ok != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+        controller.hapus(id);
         kosongkanForm();
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Tombol Hapus ditekan. Controller belum tersedia.");
+        refreshTabel();
     }
+    
 
     // CATATAN CONTROLLER: cari() -> controller.cari(kataKunci).
     private void cari() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Pencarian: " + fieldCari.getText() + " (controller belum tersedia).");
+      String k = fieldCari.getText().trim().toLowerCase();
+        java.util.List<Model.Pegawai> hasil = new java.util.ArrayList<>();
+        for (Model.Pegawai p : controller.semua()) {
+            if (k.isEmpty() || p.getNamaPegawai().toLowerCase().contains(k)
+                    || p.getIdPegawai().toLowerCase().contains(k)
+                    || p.getJabatan().toLowerCase().contains(k)) {
+                hasil.add(p);
+            }
+        }
+        isiTabel(hasil);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -147,12 +147,9 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-        // ===== Tambahan manual: jangan taruh di dalam blok Generated Code =====
 
-    // CATATAN CONTROLLER: tambahkan field PegawaiController di sini setelah tersedia.
-    // private final Controller.PegawaiController controller =
-    //         new Controller.PegawaiController();
-
+    private final Controller.PegawaiController controller = new Controller.PegawaiController();
+        
     public String getUsername() {
         return fieldUsername.getText().trim();
     }
@@ -183,6 +180,12 @@ public class Login extends javax.swing.JFrame {
         // if (pegawai == null) { tampilkanError("Username atau password salah."); return; }
         // new MenuUtama().setVisible(true);
         // this.dispose();
+        Model.Pegawai pegawai = controller.login(getUsername(), getPassword());
+        if (pegawai == null) {
+            tampilkanError("Username atau password salah.");
+            fieldPassword.setText("");
+            return;
+        }
         new MenuUtama().setVisible(true);
         this.dispose();
     }
@@ -205,12 +208,7 @@ public class Login extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
+    try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());

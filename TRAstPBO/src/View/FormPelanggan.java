@@ -18,6 +18,7 @@ public class FormPelanggan extends javax.swing.JPanel {
     public FormPelanggan() {
     initComponents();
     perbaikiLayout();   // <- baris baru
+    refreshTabel();
 }
         private void perbaikiLayout() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -282,7 +283,7 @@ public class FormPelanggan extends javax.swing.JPanel {
     // CATATAN CONTROLLER: tambahkan field PelangganController di sini setelah tersedia.
     // private final Controller.PelangganController controller =
     //         new Controller.PelangganController();
-
+    private final Controller.PelangganController controller = new Controller.PelangganController();
     public Object[] getDataForm() {
         return new Object[]{fieldNama.getText().trim(),
             fieldTelepon.getText().trim(), fieldAlamat.getText().trim()};
@@ -326,33 +327,58 @@ public class FormPelanggan extends javax.swing.JPanel {
 
     // CATATAN CONTROLLER: refreshTabel() harus mengisi dari controller.semua().
     private void refreshTabel() {
-        setDataTabel(new Object[0][0]);
+        isiTabel(controller.semua());
     }
 
+    private void isiTabel(java.util.List<Model.Pelanggan> list) {
+        Object[][] data = new Object[list.size()][4];
+        for (int i = 0; i < list.size(); i++) {
+            Model.Pelanggan p = list.get(i);
+            data[i] = new Object[]{p.getIdPelanggan(), p.getNama(), p.getNoHp(), p.getAlamat()};
+        }
+        setDataTabel(data);
+    }
+        
     // CATATAN CONTROLLER: simpan() -> controller.tambah(getDataForm()).
     private void simpan() {
+        controller.tambah(getDataForm());
         kosongkanForm();
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Tombol Simpan ditekan. Controller belum tersedia.");
+        refreshTabel();
     }
 
     // CATATAN CONTROLLER: edit() -> controller.ubah(getDataForm()).
     private void edit() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Tombol Ubah ditekan. Controller belum tersedia.");
+    // ID dari baris terpilih dikirim sebagai data[3], jadi nama juga bisa diubah
+        int b = tabel.getSelectedRow();
+        Object[] d = getDataForm();
+        if (b >= 0) {
+            d = new Object[]{d[0], d[1], d[2], tabel.getValueAt(b, 0)};
+        }
+        controller.ubah(d);
+        refreshTabel();
     }
 
     // CATATAN CONTROLLER: hapus() -> controller.hapus(id).
     private void hapus() {
+    int b = tabel.getSelectedRow();
+        String nama = (b >= 0) ? String.valueOf(tabel.getValueAt(b, 1)) : fieldNama.getText().trim();
+        if (nama.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih pelanggan yang akan dihapus.");
+            return;
+        }
+        int ok = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Hapus pelanggan '" + nama + "'?", "Konfirmasi", javax.swing.JOptionPane.YES_NO_OPTION);
+        if (ok != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+        controller.hapus(nama);
         kosongkanForm();
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Tombol Hapus ditekan. Controller belum tersedia.");
+        refreshTabel();
     }
 
     // CATATAN CONTROLLER: cari() -> controller.cari(kataKunci).
     private void cari() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Pencarian: " + fieldCari.getText() + " (controller belum tersedia).");
+        isiTabel(controller.cari(fieldCari.getText()));
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
