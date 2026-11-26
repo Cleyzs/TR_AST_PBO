@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 
 /**
  * Controller Pelanggan: penghubung View (FormPelanggan, RiwayatPelanggan,
- * FormPesanan) dengan PelangganDAO.
+ * FormPesanan) dengan PelangganDAO
  *
  * Urutan Object[] dari FormPelanggan.getDataForm():
  *   [0] nama, [1] no HP, [2] alamat   (opsional [3] id_pelanggan)
