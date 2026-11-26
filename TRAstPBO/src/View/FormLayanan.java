@@ -10,13 +10,21 @@ package View;
  */
 public class FormLayanan extends javax.swing.JPanel {
 
+    private final Controller.LayananController controller = new Controller.LayananController();
+    private String selectedId;
+
     /**
      * Creates new form FormLayanan
      */
    public FormLayanan() {
     initComponents();
     perbaikiLayout();   // <- baris baru
-    // CATATAN CONTROLLER: panggil refreshTabel() setelah Controller tersedia.
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentShown(java.awt.event.ComponentEvent evt) {
+            refreshTabel();
+        }
+    });
 }
        private void perbaikiLayout() {
         // Layout dalam kartuTabel: scrollTabel boleh melar ke bawah
@@ -129,7 +137,7 @@ public class FormLayanan extends javax.swing.JPanel {
         comboSatuan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "pcs" }));
 
         labelEstimasi.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        labelEstimasi.setText("Estimasi (hari)");
+        labelEstimasi.setText("Estimasi (jam)");
 
         tombolKosongkan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         tombolKosongkan.setText("Kosongkan");
@@ -231,7 +239,7 @@ public class FormLayanan extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nama Layanan", "Harga", "Satuan", "Estimasi (hari)"
+                "ID", "Nama Layanan", "Harga", "Satuan", "Estimasi (jam)"
             }
         ));
         tabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -299,7 +307,7 @@ public class FormLayanan extends javax.swing.JPanel {
 
 
     private void tombolSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolSimpanActionPerformed
-        simpan();
+        prosesSimpan();
     }//GEN-LAST:event_tombolSimpanActionPerformed
 
     private void tombolKosongkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolKosongkanActionPerformed
@@ -307,15 +315,15 @@ public class FormLayanan extends javax.swing.JPanel {
     }//GEN-LAST:event_tombolKosongkanActionPerformed
 
     private void tombolEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolEditActionPerformed
-        edit();
+        prosesEdit();
     }//GEN-LAST:event_tombolEditActionPerformed
 
     private void tombolHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolHapusActionPerformed
-        hapus();
+        prosesHapus();
     }//GEN-LAST:event_tombolHapusActionPerformed
 
     private void fieldCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldCariActionPerformed
-        cari();
+        refreshTabel();
     }//GEN-LAST:event_fieldCariActionPerformed
 
     private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
@@ -351,8 +359,25 @@ public class FormLayanan extends javax.swing.JPanel {
     public void kosongkanForm() {
         fieldNama.setText("");
         fieldHarga.setText("");
+        selectedId = null;
         comboSatuan.setSelectedIndex(0);
+        tabel.clearSelection();
         fieldEstimasi.setText("");
+    }
+
+    public void refreshTabel() {
+        java.util.List<Model.Layanan> layanan = controller.semua();
+        String keyword = fieldCari.getText().trim().toLowerCase(java.util.Locale.ROOT);
+        java.util.List<Object[]> baris = new java.util.ArrayList<>();
+        for (Model.Layanan item : layanan) {
+            if (keyword.isEmpty()
+                    || item.getIdLayanan().toLowerCase(java.util.Locale.ROOT).contains(keyword)
+                    || item.getNamaLayanan().toLowerCase(java.util.Locale.ROOT).contains(keyword)) {
+                baris.add(new Object[]{item.getIdLayanan(), item.getNamaLayanan(), item.getHarga(),
+                    item.getJenisSatuan(), item.getEstimasiWaktu()});
+            }
+        }
+        setDataTabel(baris.toArray(new Object[0][]));
     }
 
     public void setDataTabel(Object[][] data) {
@@ -371,6 +396,7 @@ public class FormLayanan extends javax.swing.JPanel {
         if (b < 0) {
             return;
         }
+        selectedId = String.valueOf(tabel.getValueAt(b, 0));
         setDataForm(new Object[]{
             tabel.getValueAt(b, 1),
             tabel.getValueAt(b, 2),
@@ -380,6 +406,26 @@ public class FormLayanan extends javax.swing.JPanel {
     }
 
     // CATATAN CONTROLLER: simpan() harus memanggil controller.tambah(getDataForm()).
+    private void prosesSimpan() {
+        try {
+            int jumlahSebelum = controller.semua().size();
+            Object[] data = getDataForm();
+            Model.Layanan layanan = new Model.Layanan(null, String.valueOf(data[0]),
+                    Double.parseDouble(String.valueOf(data[1]).replace(',', '.')),
+                    String.valueOf(data[2]), Integer.parseInt(String.valueOf(data[3])));
+            controller.tambah(layanan);
+            if (controller.semua().size() > jumlahSebelum) {
+                fieldCari.setText("");
+                kosongkanForm();
+            }
+            refreshTabel();
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Harga harus berupa angka dan estimasi harus berupa bilangan bulat.",
+                    "Input tidak valid", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     private void simpan() {
         kosongkanForm();
         javax.swing.JOptionPane.showMessageDialog(this,
@@ -387,12 +433,56 @@ public class FormLayanan extends javax.swing.JPanel {
     }
 
     // CATATAN CONTROLLER: edit() harus memanggil controller.ubah(getDataForm()).
+    private void prosesEdit() {
+        if (selectedId == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih layanan yang akan diubah.");
+            return;
+        }
+        try {
+            Object[] data = getDataForm();
+            controller.ubah(new Model.Layanan(selectedId, String.valueOf(data[0]),
+                    Double.parseDouble(String.valueOf(data[1]).replace(',', '.')),
+                    String.valueOf(data[2]), Integer.parseInt(String.valueOf(data[3]))));
+            refreshTabel();
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Harga harus berupa angka dan estimasi harus berupa bilangan bulat.",
+                    "Input tidak valid", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     private void edit() {
         javax.swing.JOptionPane.showMessageDialog(this,
                 "Tombol Ubah ditekan. Controller belum tersedia.");
     }
 
     // CATATAN CONTROLLER: hapus() harus memanggil controller.hapus(id).
+    private void prosesHapus() {
+        if (selectedId == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih layanan yang akan dihapus.");
+            return;
+        }
+        int konfirmasi = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Hapus layanan " + selectedId + "?", "Konfirmasi",
+                javax.swing.JOptionPane.YES_NO_OPTION);
+        if (konfirmasi != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+        String id = selectedId;
+        controller.hapus(id);
+        boolean masihAda = false;
+        for (Model.Layanan layanan : controller.semua()) {
+            if (id.equals(layanan.getIdLayanan())) {
+                masihAda = true;
+                break;
+            }
+        }
+        if (!masihAda) {
+            kosongkanForm();
+        }
+        refreshTabel();
+    }
+
     private void hapus() {
         kosongkanForm();
         javax.swing.JOptionPane.showMessageDialog(this,

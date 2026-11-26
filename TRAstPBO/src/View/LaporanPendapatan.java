@@ -10,6 +10,8 @@ package View;
  */
 public class LaporanPendapatan extends javax.swing.JPanel {
 
+    private final Controller.LaporanController controller = new Controller.LaporanController();
+
     /**
      * Creates new form LaporanPendapatan
      */
@@ -17,7 +19,13 @@ public class LaporanPendapatan extends javax.swing.JPanel {
     initComponents();
     spinnerDari.setEditor(new javax.swing.JSpinner.DateEditor(spinnerDari, "dd-MM-yyyy"));
     spinnerSampai.setEditor(new javax.swing.JSpinner.DateEditor(spinnerSampai, "dd-MM-yyyy"));
-    perbaikiLayout();   // <- baris baru
+    perbaikiLayout();
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentShown(java.awt.event.ComponentEvent evt) {
+            tampilkanLaporan();
+        }
+    });
 }
        private void perbaikiLayout() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -135,7 +143,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
         jPanel2.setBackground(new java.awt.Color(160, 216, 239));
 
         labelTotalPendapatan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        labelTotalPendapatan.setText("Total Pendapatan");
+        labelTotalPendapatan.setText("Total Biaya Pesanan Lunas");
 
         nilaiTotal.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         nilaiTotal.setText("Rp.");
@@ -164,7 +172,7 @@ public class LaporanPendapatan extends javax.swing.JPanel {
         kartuTabel.setBackground(new java.awt.Color(160, 216, 239));
 
         judulTabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        judulTabel.setText("Rincian Pendapatan");
+        judulTabel.setText("Total biaya pesanan lunas berdasarkan tanggal masuk");
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -226,7 +234,26 @@ public class LaporanPendapatan extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tampilkanLaporan() {
+        java.sql.Date tanggalAwal = getTanggalAwal();
+        java.sql.Date tanggalAkhir = getTanggalAkhir();
+        if (tanggalAkhir.before(tanggalAwal)) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Tanggal akhir tidak boleh sebelum tanggal awal.",
+                    "Rentang tanggal tidak valid", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Object[] hasil = controller.pendapatan(tanggalAwal, tanggalAkhir);
+        if (hasil == null || hasil.length < 2 || !(hasil[0] instanceof Number)
+                || !(hasil[1] instanceof Object[][])) {
+            return;
+        }
+        setTotalPendapatan(((Number) hasil[0]).doubleValue());
+        setDataTabel((Object[][]) hasil[1]);
+    }
+
     private void tombolTampilkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolTampilkanActionPerformed
+        tampilkanLaporan();
         // Controller yang akan memanggil getTanggalAwal()/getTanggalAkhir(),
         // lalu mengisi setTotalPendapatan(...) dan setDataTabel(...).
     }//GEN-LAST:event_tombolTampilkanActionPerformed
@@ -250,7 +277,8 @@ public class LaporanPendapatan extends javax.swing.JPanel {
 
     /** Controller memanggil ini untuk menampilkan total pendapatan. */
     public void setTotalPendapatan(double total) {
-        nilaiTotal.setText("Rp." + total);
+        nilaiTotal.setText("Rp " + java.text.NumberFormat.getNumberInstance(
+                new java.util.Locale("id", "ID")).format(total));
     }
 
     /** Controller memanggil ini untuk mengisi tabel dengan data yang sudah jadi. */

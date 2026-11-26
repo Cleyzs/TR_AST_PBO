@@ -10,13 +10,29 @@ package View;
  */
 public class FormPesanan extends javax.swing.JPanel {
 
+    private final Controller.PesananController pesananController = new Controller.PesananController();
+    private final Controller.PelangganController pelangganController = new Controller.PelangganController();
+    private final Controller.LayananController layananController = new Controller.LayananController();
+    private boolean memuatCombo;
+
     /**
      * Creates new form FormPesanan
      */
    public FormPesanan() {
     initComponents();
     perbaikiLayout();   // <- baris baru
-    // CATATAN CONTROLLER: panggil muatCombo() setelah Controller tersedia.
+    fieldEstimasi.setEditable(false);
+    checkExpress.setSelected(false);
+    checkExpress.setEnabled(false);
+    checkExpress.setText("Express (belum tersedia)");
+    checkExpress.setToolTipText("Tarif dan rumus Express belum ditetapkan.");
+    aturRendererCombo();
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentShown(java.awt.event.ComponentEvent evt) {
+            muatCombo();
+        }
+    });
 }
     private void perbaikiLayout() {
         // ===== Layout dalam jPanel1 (Data Pesanan) =====
@@ -182,14 +198,14 @@ public class FormPesanan extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Pelanggan");
 
-        comboPelanggan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pelanggan 1", "Pelanggan 2" }));
+        comboPelanggan.setModel(new javax.swing.DefaultComboBoxModel<Model.Pelanggan>());
         comboPelanggan.addActionListener(this::comboPelangganActionPerformed);
 
         tombolTambahPelanggan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         tombolTambahPelanggan.setText("+ Tambah Pelanggan Baru");
         tombolTambahPelanggan.addActionListener(this::tombolTambahPelangganActionPerformed);
 
-        comboLayanan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cuci Express", "Cuci Setrika" }));
+        comboLayanan.setModel(new javax.swing.DefaultComboBoxModel<Model.Layanan>());
         comboLayanan.addActionListener(this::comboLayananActionPerformed);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -374,23 +390,23 @@ public class FormPesanan extends javax.swing.JPanel {
     }//GEN-LAST:event_tombolTambahPelangganActionPerformed
 
     private void tombolSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolSimpanActionPerformed
-       simpanPesanan();
+       simpanPesananTerhubung();
     }//GEN-LAST:event_tombolSimpanActionPerformed
 
     private void fieldBeratKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldBeratKeyReleased
-        hitungUlang();
+        updatePreview();
     }//GEN-LAST:event_fieldBeratKeyReleased
 
     private void comboPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPelangganActionPerformed
-        hitungUlang();
+        updatePreview();
     }//GEN-LAST:event_comboPelangganActionPerformed
 
     private void comboLayananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboLayananActionPerformed
-        hitungUlang();
+        updatePreview();
     }//GEN-LAST:event_comboLayananActionPerformed
 
     private void checkExpressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkExpressActionPerformed
-        hitungUlang();
+        updatePreview();
     }//GEN-LAST:event_checkExpressActionPerformed
 
     // CATATAN CONTROLLER: tambahkan field PesananController di sini setelah tersedia.
@@ -405,10 +421,110 @@ public class FormPesanan extends javax.swing.JPanel {
     // CATATAN CONTROLLER: muatCombo() harus mengisi combo dari Controller:
     //   controller.semuaNamaPelanggan() -> comboPelanggan
     //   controller.semuaNamaLayanan()   -> comboLayanan
+    private void aturRendererCombo() {
+        comboPelanggan.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list,
+                    Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Model.Pelanggan) {
+                    Model.Pelanggan pelanggan = (Model.Pelanggan) value;
+                    setText(pelanggan.getNama() + " (ID " + pelanggan.getIdPelanggan() + ")");
+                }
+                return this;
+            }
+        });
+        comboLayanan.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list,
+                    Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Model.Layanan) {
+                    Model.Layanan layanan = (Model.Layanan) value;
+                    String harga = java.text.NumberFormat.getNumberInstance(
+                            new java.util.Locale("id", "ID")).format(layanan.getHarga());
+                    setText(layanan.getNamaLayanan() + " | Rp " + harga + "/" + layanan.getJenisSatuan()
+                            + " | " + layanan.getEstimasiWaktu() + " jam");
+                }
+                return this;
+            }
+        });
+    }
+
     private void muatCombo() {
-        // sementara: biarkan item dummy dari Designer
+        memuatCombo = true;
+        try {
+            comboPelanggan.removeAllItems();
+            for (Model.Pelanggan pelanggan : pelangganController.semua()) {
+                comboPelanggan.addItem(pelanggan);
+            }
+            comboLayanan.removeAllItems();
+            for (Model.Layanan layanan : layananController.semua()) {
+                comboLayanan.addItem(layanan);
+            }
+        } finally {
+            memuatCombo = false;
+        }
+        updatePreview();
     }
     
+        private String formatRupiah(double nilai) {
+            return "Rp " + java.text.NumberFormat.getNumberInstance(
+                    new java.util.Locale("id", "ID")).format(nilai);
+        }
+
+        private void updatePreview() {
+            if (memuatCombo) {
+                return;
+            }
+            Model.Pelanggan pelanggan = (Model.Pelanggan) comboPelanggan.getSelectedItem();
+            Model.Layanan layanan = (Model.Layanan) comboLayanan.getSelectedItem();
+            if (layanan == null) {
+                jLabel5.setText("Berat / jumlah");
+                fieldEstimasi.setText("-");
+                jLabel9.setText("Rp 0");
+                jTextArea1.setText("Pilih layanan yang tersedia.");
+                return;
+            }
+
+            String satuan = layanan.getJenisSatuan();
+            jLabel5.setText("Jumlah (" + satuan + ")");
+            fieldEstimasi.setText(java.time.LocalDateTime.now()
+                    .plusHours(layanan.getEstimasiWaktu())
+                    .format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+
+            String jumlahTeks = fieldBerat.getText().trim().replace(',', '.');
+            if (jumlahTeks.isEmpty()) {
+                jLabel9.setText("Rp 0");
+                jTextArea1.setText("Pilih pelanggan dan masukkan berat/jumlah.");
+                return;
+            }
+
+            try {
+                double jumlah = Double.parseDouble(jumlahTeks);
+                if (!Double.isFinite(jumlah) || jumlah <= 0) {
+                    throw new IllegalArgumentException("Jumlah harus lebih dari nol.");
+                }
+                if ("Pcs".equalsIgnoreCase(satuan) && jumlah != Math.rint(jumlah)) {
+                    throw new IllegalArgumentException("Jumlah layanan Pcs harus bilangan bulat.");
+                }
+                double total = pesananController.hitungPratinjau(
+                        jumlah, layanan, checkExpress.isSelected());
+                jLabel9.setText(formatRupiah(total));
+                jTextArea1.setText("Pelanggan : " + (pelanggan == null ? "-" : pelanggan.getNama())
+                        + "\nLayanan   : " + layanan.getNamaLayanan()
+                        + "\nJumlah    : " + jumlahTeks + " " + satuan
+                        + "\nHarga     : " + formatRupiah(layanan.getHarga()) + "/" + satuan
+                        + "\nEstimasi  : " + fieldEstimasi.getText());
+            } catch (UnsupportedOperationException | IllegalArgumentException e) {
+                jLabel9.setText("Rp 0");
+                jTextArea1.setText(e.getMessage());
+            } catch (IllegalStateException e) {
+                jLabel9.setText("Rp 0");
+                jTextArea1.setText(e.getMessage());
+            }
+        }
+
         private void hitungUlang() {
             String beratTeks = fieldBerat.getText().trim();
             Object layanan = comboLayanan.getSelectedItem();
@@ -434,6 +550,42 @@ public class FormPesanan extends javax.swing.JPanel {
                     + "\nEstimasi   : " + fieldEstimasi.getText());
         }
 
+        private void simpanPesananTerhubung() {
+            Model.Pelanggan pelanggan = (Model.Pelanggan) comboPelanggan.getSelectedItem();
+            Model.Layanan layanan = (Model.Layanan) comboLayanan.getSelectedItem();
+            if (pelanggan == null || layanan == null) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Pilih pelanggan dan layanan dari data yang tersedia.");
+                return;
+            }
+            try {
+                double jumlah = Double.parseDouble(fieldBerat.getText().trim().replace(',', '.'));
+                if (!Double.isFinite(jumlah) || jumlah <= 0) {
+                    throw new IllegalArgumentException("Berat atau jumlah harus lebih dari nol.");
+                }
+                if ("Pcs".equalsIgnoreCase(layanan.getJenisSatuan())
+                        && jumlah != Math.rint(jumlah)) {
+                    throw new IllegalArgumentException("Jumlah layanan Pcs harus bilangan bulat.");
+                }
+                Model.Pesanan pesanan = new Model.Pesanan(null, pelanggan.getIdPelanggan(),
+                        layanan.getIdLayanan(), jumlah, 0, 0, null, null, null, null);
+                String idPesanan = pesananController.simpan(pesanan);
+                if (idPesanan != null) {
+                    fieldBerat.setText("");
+                    updatePreview();
+                    Nota nota = new Nota(idPesanan);
+                    nota.setVisible(true);
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Masukkan berat/jumlah dalam format angka yang valid.",
+                        "Input tidak valid", javax.swing.JOptionPane.WARNING_MESSAGE);
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, e.getMessage(),
+                        "Input tidak valid", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
         private void simpanPesanan() {
             String berat = fieldBerat.getText().trim();
             Object pelanggan = comboPelanggan.getSelectedItem();
@@ -454,8 +606,8 @@ public class FormPesanan extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane areaRincian;
     private javax.swing.JCheckBox checkExpress;
-    private javax.swing.JComboBox<String> comboLayanan;
-    private javax.swing.JComboBox<String> comboPelanggan;
+    private javax.swing.JComboBox<Model.Layanan> comboLayanan;
+    private javax.swing.JComboBox<Model.Pelanggan> comboPelanggan;
     private javax.swing.JTextField fieldBerat;
     private javax.swing.JTextField fieldEstimasi;
     private javax.swing.JLabel jLabel1;

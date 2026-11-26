@@ -18,8 +18,12 @@ public class LayananDAO extends BaseDAO {
                 rs.getInt("estimasi_waktu"));
     }
 
+    private static final Object ID_LOCK = new Object();
+
     public void insert(Layanan l) throws SQLException {
-        String sql = "INSERT INTO tb_layanan (id_layanan, nama_layanan, harga, jenis_satuan, estimasi_waktu) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO tb_layanan "
+                + "(id_layanan, nama_layanan, harga, jenis_satuan, estimasi_waktu) "
+                + "VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, l.getIdLayanan());
             ps.setString(2, l.getNamaLayanan());
@@ -30,9 +34,38 @@ public class LayananDAO extends BaseDAO {
         }
     }
 
+    public String insertDenganIdOtomatis(Layanan l) throws SQLException {
+        synchronized (ID_LOCK) {
+            for (int percobaan = 0; percobaan < 3; percobaan++) {
+                String id = generateIdLayanan();
+                l.setIdLayanan(id);
+                try {
+                    insert(l);
+                    return id;
+                } catch (SQLException e) {
+                    if (e.getErrorCode() != 1062 || percobaan == 2) {
+                        throw e;
+                    }
+                }
+            }
+        }
+        throw new SQLException("Gagal membuat ID layanan yang unik.");
+    }
+
+    private String generateIdLayanan() throws SQLException {
+        String sql = "SELECT COALESCE(MAX(CAST(SUBSTRING(id_layanan, 4) AS UNSIGNED)), 0) AS maks "
+                + "FROM tb_layanan WHERE id_layanan REGEXP '^LYN[0-9]+$'";
+        try (PreparedStatement ps = getCon().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            long next = rs.next() ? rs.getLong("maks") + 1 : 1;
+            return String.format("LYN%03d", next);
+        }
+    }
+
     public List<Layanan> getAll() throws SQLException {
         List<Layanan> list = new ArrayList<>();
-        String sql = "SELECT * FROM tb_layanan ORDER BY id_layanan";
+        String sql = "SELECT id_layanan, nama_layanan, harga, jenis_satuan, estimasi_waktu "
+                + "FROM tb_layanan ORDER BY id_layanan";
         try (PreparedStatement ps = getCon().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -43,7 +76,8 @@ public class LayananDAO extends BaseDAO {
     }
 
     public Layanan getById(String idLayanan) throws SQLException {
-        String sql = "SELECT * FROM tb_layanan WHERE id_layanan = ?";
+        String sql = "SELECT id_layanan, nama_layanan, harga, jenis_satuan, estimasi_waktu "
+                + "FROM tb_layanan WHERE id_layanan = ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, idLayanan);
             try (ResultSet rs = ps.executeQuery()) {
@@ -52,8 +86,23 @@ public class LayananDAO extends BaseDAO {
         }
     }
 
+    public boolean isUsedByPesanan(String idLayanan) throws SQLException {
+        String sql = "SELECT 1 FROM tb_pesanan WHERE id_layanan = ? LIMIT 1";
+        try (PreparedStatement ps = getCon().prepareStatement(sql)) {
+            ps.setString(1, idLayanan);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
     public void update(Layanan l) throws SQLException {
-        String sql = "UPDATE tb_layanan SET nama_layanan = ?, harga = ?, jenis_satuan = ?, estimasi_waktu = ? WHERE id_layanan = ?";
+        if (getById(l.getIdLayanan()) == null) {
+            throw new SQLException("Layanan dengan ID '" + l.getIdLayanan() + "' tidak ditemukan.");
+        }
+
+        String sql = "UPDATE tb_layanan SET nama_layanan = ?, harga = ?, jenis_satuan = ?, "
+                + "estimasi_waktu = ? WHERE id_layanan = ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, l.getNamaLayanan());
             ps.setDouble(2, l.getHarga());
@@ -68,7 +117,9 @@ public class LayananDAO extends BaseDAO {
         String sql = "DELETE FROM tb_layanan WHERE id_layanan = ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, idLayanan);
-            ps.executeUpdate();
+            if (ps.executeUpdate() == 0) {
+                throw new SQLException("Layanan dengan ID '" + idLayanan + "' tidak ditemukan.");
+            }
         }
     }
 }

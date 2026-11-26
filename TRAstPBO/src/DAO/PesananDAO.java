@@ -10,6 +10,9 @@ import java.util.List;
 
 public class PesananDAO extends BaseDAO {
 
+    private static final String KOLOM_PESANAN = "id_pesanan, id_pelanggan, id_layanan, berat, "
+            + "biaya_tambahan, total_biaya, status_pesanan, status_pembayaran, tgl_masuk, estimasi_selesai";
+
     private Pesanan map(ResultSet rs) throws SQLException {
         return new Pesanan(
                 rs.getString("id_pesanan"),
@@ -24,7 +27,6 @@ public class PesananDAO extends BaseDAO {
                 rs.getTimestamp("estimasi_selesai"));
     }
 
-    /** Bikin ID pesanan berikutnya, format LP001, LP002, dst. */
     public String generateIdPesanan() throws SQLException {
         String sql = "SELECT MAX(CAST(SUBSTRING(id_pesanan, 3) AS UNSIGNED)) AS maks FROM tb_pesanan";
         int next = 1;
@@ -38,9 +40,7 @@ public class PesananDAO extends BaseDAO {
     }
 
     public void buatPesanan(Pesanan p) throws SQLException {
-        String sql = "INSERT INTO tb_pesanan (id_pesanan, id_pelanggan, id_layanan, berat, biaya_tambahan, "
-                + "total_biaya, status_pesanan, status_pembayaran, tgl_masuk, estimasi_selesai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO tb_pesanan (" + KOLOM_PESANAN + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, p.getIdPesanan());
             ps.setInt(2, p.getIdPelanggan());
@@ -58,7 +58,7 @@ public class PesananDAO extends BaseDAO {
 
     public List<Pesanan> getSemuaPesanan() throws SQLException {
         List<Pesanan> list = new ArrayList<>();
-        String sql = "SELECT * FROM tb_pesanan ORDER BY tgl_masuk DESC";
+        String sql = "SELECT " + KOLOM_PESANAN + " FROM tb_pesanan ORDER BY tgl_masuk DESC";
         try (PreparedStatement ps = getCon().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -68,8 +68,34 @@ public class PesananDAO extends BaseDAO {
         return list;
     }
 
+    public List<Object[]> getDataTabelPesanan() throws SQLException {
+        List<Object[]> list = new ArrayList<>();
+        String sql = "SELECT p.id_pesanan, u.nama AS nama_pelanggan, l.nama_layanan, "
+                + "p.berat, l.jenis_satuan, p.status_pesanan, p.status_pembayaran, p.total_biaya "
+                + "FROM tb_pesanan p "
+                + "JOIN tb_user u ON u.id_pelanggan = p.id_pelanggan "
+                + "JOIN tb_layanan l ON l.id_layanan = p.id_layanan "
+                + "ORDER BY p.tgl_masuk DESC";
+        try (PreparedStatement ps = getCon().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(new Object[]{
+                    rs.getString("id_pesanan"),
+                    rs.getString("nama_pelanggan"),
+                    rs.getString("nama_layanan"),
+                    rs.getDouble("berat"),
+                    rs.getString("jenis_satuan"),
+                    rs.getString("status_pesanan"),
+                    rs.getString("status_pembayaran"),
+                    rs.getDouble("total_biaya")
+                });
+            }
+        }
+        return list;
+    }
+
     public Pesanan getById(String idPesanan) throws SQLException {
-        String sql = "SELECT * FROM tb_pesanan WHERE id_pesanan = ?";
+        String sql = "SELECT " + KOLOM_PESANAN + " FROM tb_pesanan WHERE id_pesanan = ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, idPesanan);
             try (ResultSet rs = ps.executeQuery()) {
@@ -78,10 +104,10 @@ public class PesananDAO extends BaseDAO {
         }
     }
 
-    /** Riwayat semua pesanan satu pelanggan (buat RiwayatPelangganView). */
     public List<Pesanan> getByPelanggan(int idPelanggan) throws SQLException {
         List<Pesanan> list = new ArrayList<>();
-        String sql = "SELECT * FROM tb_pesanan WHERE id_pelanggan = ? ORDER BY tgl_masuk DESC";
+        String sql = "SELECT " + KOLOM_PESANAN + " FROM tb_pesanan "
+                + "WHERE id_pelanggan = ? ORDER BY tgl_masuk DESC";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setInt(1, idPelanggan);
             try (ResultSet rs = ps.executeQuery()) {
@@ -93,7 +119,6 @@ public class PesananDAO extends BaseDAO {
         return list;
     }
 
-    /** statusBaru: Diterima, Dicuci, Disetrika, Siap Diambil, atau Sudah Diambil. */
     public void updateStatusPesanan(String idPesanan, String statusBaru) throws SQLException {
         String sql = "UPDATE tb_pesanan SET status_pesanan = ? WHERE id_pesanan = ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
@@ -103,7 +128,6 @@ public class PesananDAO extends BaseDAO {
         }
     }
 
-    /** statusBaru: Belum Dibayar, Dibayar Sebagian, atau Lunas. */
     public void updateStatusPembayaran(String idPesanan, String statusBaru) throws SQLException {
         String sql = "UPDATE tb_pesanan SET status_pembayaran = ? WHERE id_pesanan = ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
@@ -113,27 +137,20 @@ public class PesananDAO extends BaseDAO {
         }
     }
 
-    /**
-     * Batalin pesanan = hapus barisnya dari tabel.
-     * (Dipilih hapus karena belum tentu enum status_pesanan punya nilai "Dibatalkan".
-     * Kalau ternyata ada, ganti jadi UPDATE status_pesanan.)
-     */
     public void batalkanPesanan(String idPesanan) throws SQLException {
-        String sql = "DELETE FROM tb_pesanan WHERE id_pesanan = ?";
+        String sql = "UPDATE tb_pesanan SET status_pesanan = 'Dibatalkan' "
+                + "WHERE id_pesanan = ? AND status_pesanan <> 'Sudah Diambil'";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setString(1, idPesanan);
-            ps.executeUpdate();
+            if (ps.executeUpdate() == 0) {
+                throw new SQLException("Pesanan tidak dapat dibatalkan karena tidak ditemukan atau sudah diambil.");
+            }
         }
     }
 
-    /**
-     * Total pendapatan pesanan yang statusnya Lunas, berdasarkan tgl_masuk
-     * antara awal dan akhir (keduanya ikut dihitung).
-     * Tips: akhir sebaiknya jam 23:59:59 biar sehari penuh ikut.
-     */
     public double getPendapatanByDate(Timestamp awal, Timestamp akhir) throws SQLException {
         String sql = "SELECT COALESCE(SUM(total_biaya), 0) AS total FROM tb_pesanan "
-                + "WHERE status_pembayaran = 'Lunas' AND tgl_masuk BETWEEN ? AND ?";
+                + "WHERE status_pembayaran = 'Lunas' AND tgl_masuk >= ? AND tgl_masuk < ?";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setTimestamp(1, awal);
             ps.setTimestamp(2, akhir);
@@ -143,11 +160,10 @@ public class PesananDAO extends BaseDAO {
         }
     }
 
-  
     public List<Pesanan> getPesananLunasByDate(Timestamp awal, Timestamp akhir) throws SQLException {
         List<Pesanan> list = new ArrayList<>();
-        String sql = "SELECT * FROM tb_pesanan WHERE status_pembayaran = 'Lunas' "
-                + "AND tgl_masuk BETWEEN ? AND ? ORDER BY tgl_masuk";
+        String sql = "SELECT " + KOLOM_PESANAN + " FROM tb_pesanan "
+                + "WHERE status_pembayaran = 'Lunas' AND tgl_masuk >= ? AND tgl_masuk < ? ORDER BY tgl_masuk";
         try (PreparedStatement ps = getCon().prepareStatement(sql)) {
             ps.setTimestamp(1, awal);
             ps.setTimestamp(2, akhir);

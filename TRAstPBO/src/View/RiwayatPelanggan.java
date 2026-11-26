@@ -10,14 +10,23 @@ package View;
  */
 public class RiwayatPelanggan extends javax.swing.JPanel {
 
+    private final Controller.PelangganController pelangganController = new Controller.PelangganController();
+    private final Controller.LaporanController laporanController = new Controller.LaporanController();
+    private boolean memuatCombo;
+
     /**
      * Creates new form RiwayatPelanggan
      */
 public RiwayatPelanggan() {
     initComponents();
     perbaikiLayout();   // <- baris baru
-    comboPelanggan.addActionListener(e -> pilihPelanggan());
-    muatCombo();
+    comboPelanggan.addActionListener(e -> muatRiwayatPelanggan());
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentShown(java.awt.event.ComponentEvent evt) {
+            muatCombo();
+        }
+    });
 }
     private void perbaikiLayout() {
         // ===== Layout dalam jPanel1 (info pelanggan) =====
@@ -143,7 +152,7 @@ public RiwayatPelanggan() {
 
         labelNama.setText("Nama");
 
-        comboPelanggan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboPelanggan.setModel(new javax.swing.DefaultComboBoxModel<Model.Pelanggan>());
 
         jLabel4.setText("-");
 
@@ -230,7 +239,7 @@ public RiwayatPelanggan() {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "ID Pesanan", "Tanggal", "Layanan", "Berat (kg)", "Status", "Total"
+                "ID Pesanan", "Tanggal", "Layanan", "Jumlah (Kg/Pcs)", "Status", "Total"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -287,7 +296,50 @@ public RiwayatPelanggan() {
 
     // CATATAN CONTROLLER: muatCombo() harus mengisi combo dari pelangganController.semua().
     private void muatCombo() {
-        // sementara: biarkan item dummy dari Designer
+        memuatCombo = true;
+        try {
+            comboPelanggan.removeAllItems();
+            for (Model.Pelanggan pelanggan : pelangganController.semua()) {
+                comboPelanggan.addItem(pelanggan);
+            }
+        } finally {
+            memuatCombo = false;
+        }
+        muatRiwayatPelanggan();
+    }
+
+    private void muatRiwayatPelanggan() {
+        if (memuatCombo) {
+            return;
+        }
+        Model.Pelanggan pelanggan = (Model.Pelanggan) comboPelanggan.getSelectedItem();
+        if (pelanggan == null) {
+            setDataProfil(null);
+            setDataTabel(new Object[0][6]);
+            return;
+        }
+        Object[] hasil = laporanController.riwayatPelanggan(pelanggan.getIdPelanggan());
+        if (hasil == null || hasil.length < 5 || !(hasil[4] instanceof Object[][])) {
+            setDataProfil(null);
+            setDataTabel(new Object[0][6]);
+            return;
+        }
+        setDataProfil(hasil);
+        setDataTabel((Object[][]) hasil[4]);
+    }
+
+    public void setDataProfil(Object[] hasil) {
+        if (hasil == null || hasil.length < 4) {
+            jLabel4.setText("-");
+            jLabel8.setText("-");
+            jLabel6.setText("-");
+            jLabel10.setText("-");
+            return;
+        }
+        jLabel4.setText(String.valueOf(hasil[0]));
+        jLabel8.setText(String.valueOf(hasil[1]));
+        jLabel6.setText(String.valueOf(hasil[2]));
+        jLabel10.setText(String.valueOf(hasil[3]));
     }
 
     private void pilihPelanggan() {
@@ -316,7 +368,7 @@ public RiwayatPelanggan() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> comboPelanggan;
+    private javax.swing.JComboBox<Model.Pelanggan> comboPelanggan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

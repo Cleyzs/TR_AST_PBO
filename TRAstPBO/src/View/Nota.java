@@ -18,6 +18,7 @@ public class Nota extends javax.swing.JFrame {
     public Nota() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(255, 255, 242));
+        setDataNota(null);
     }
 
     /** Dipanggil FormPesanan / DaftarPesanan setelah pesanan disimpan. */
@@ -27,7 +28,11 @@ public class Nota extends javax.swing.JFrame {
         getContentPane().setBackground(new java.awt.Color(255, 255, 242));
         setLocationRelativeTo(null);
 
-        // CATATAN CONTROLLER: ambil data nota lewat controller.dataNota(idPesanan)
+        setDataNota(null);
+        Object[] data = new Controller.LaporanController().dataNota(idPesanan);
+        if (data != null) {
+            setDataNota(data);
+        }
         // lalu teruskan ke setDataNota(data). Contoh:
         // Object[] data = controller.dataNota(idPesanan);
         // setDataNota(data);
@@ -37,14 +42,17 @@ public class Nota extends javax.swing.JFrame {
 
     /** Controller mengisi nota lewat method ini (Object[] berisi 12 nilai). */
     public void setDataNota(Object[] data) {
-        if (data == null || data.length < 12) return;
+        if (data == null || data.length < 12) {
+            data = new Object[12];
+            java.util.Arrays.fill(data, "Tidak tersedia");
+        }
         jLabel14.setText(String.valueOf(data[0]));  // Nomor Pesanan
         jLabel16.setText(String.valueOf(data[1]));  // Pelanggan
         jLabel17.setText(String.valueOf(data[2]));  // Telepon / Alamat
         jLabel18.setText(String.valueOf(data[3]));  // Layanan
         jLabel19.setText(String.valueOf(data[4]));  // Berat
         jLabel20.setText(String.valueOf(data[5]));  // Total
-        jLabel21.setText(String.valueOf(data[6]));  // Biaya Express
+        jLabel21.setText(String.valueOf(data[6]));  // Biaya Tambahan
         jLabel22.setText(String.valueOf(data[7]));  // Tanggal Masuk
         jLabel23.setText(String.valueOf(data[8]));  // Estimasi Selesai
         jLabel24.setText(String.valueOf(data[9]));  // Status Pembayaran
@@ -91,7 +99,7 @@ public class Nota extends javax.swing.JFrame {
         tombolCetak = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAutoRequestFocus(false);
         setBackground(new java.awt.Color(255, 255, 242));
 
@@ -115,7 +123,7 @@ public class Nota extends javax.swing.JFrame {
         labelLayanan.setText("Layanan");
 
         labelBiayaExpress.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        labelBiayaExpress.setText("Biaya Express");
+        labelBiayaExpress.setText("Biaya Tambahan");
 
         labelTanggalMasuk.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         labelTanggalMasuk.setText("Tanggal Masuk");

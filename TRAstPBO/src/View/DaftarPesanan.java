@@ -10,11 +10,45 @@ package View;
  */
 public class DaftarPesanan extends javax.swing.JPanel {
 
+    private final Controller.PesananController controller = new Controller.PesananController();
+    private String statusFilter;
+
     /**
      * Creates new form DaftarPesanan
      */
     public DaftarPesanan() {
         initComponents();
+        tabel.setModel(new javax.swing.table.DefaultTableModel(new Object[0][7],
+                new String[]{"ID", "Pelanggan", "Layanan", "Berat/Jumlah", "Status", "Bayar", "Total"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+        fieldJumlahBayar.setEditable(false);
+        fieldJumlahBayar.setText("");
+        jLabel2.setText("Nominal tidak disimpan (ubah status saja)");
+        labelSisa.setText("Sisa tagihan tidak tersedia");
+        tombolUpdatePembayaran.setText("Ubah Status Bayar");
+        javax.swing.ButtonGroup filter = new javax.swing.ButtonGroup();
+        filter.add(chipSemua);
+        filter.add(chipDiterima);
+        filter.add(chipDicuci);
+        filter.add(chipDisetrika);
+        filter.add(chipSiap);
+        chipSemua.setSelected(true);
+        chipSemua.addActionListener(e -> aturFilter(null));
+        chipDiterima.addActionListener(e -> aturFilter("Diterima"));
+        chipDicuci.addActionListener(e -> aturFilter("Dicuci"));
+        chipDisetrika.addActionListener(e -> aturFilter("Disetrika"));
+        chipSiap.addActionListener(e -> aturFilter("Siap Diambil"));
+        tombolLihatNota.addActionListener(e -> lihatNota());
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                refreshTabel();
+            }
+        });
     }
 
     /**
@@ -176,13 +210,109 @@ public class DaftarPesanan extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     private void tombolUbahStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolUbahStatusActionPerformed
+        ubahStatusDipilih();
         // TODO add your handling code here:
     }//GEN-LAST:event_tombolUbahStatusActionPerformed
 
     private void tombolUpdatePembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolUpdatePembayaranActionPerformed
+        ubahStatusBayarDipilih();
         // TODO add your handling code here:
     }//GEN-LAST:event_tombolUpdatePembayaranActionPerformed
 
+
+    private void aturFilter(String status) {
+        statusFilter = status;
+        refreshTabel();
+    }
+
+    public void refreshTabel() {
+        Object[][] semuaPesanan = controller.dataTabel();
+        java.util.List<Object[]> hasil = new java.util.ArrayList<>();
+        for (Object[] baris : semuaPesanan) {
+            if (statusFilter == null || statusFilter.equals(String.valueOf(baris[4]))) {
+                hasil.add(baris);
+            }
+        }
+        setDataTabel(hasil.toArray(new Object[0][]));
+    }
+
+    public void setDataTabel(Object[][] data) {
+        javax.swing.table.DefaultTableModel model =
+                (javax.swing.table.DefaultTableModel) tabel.getModel();
+        model.setRowCount(0);
+        if (data != null) {
+            for (Object[] baris : data) {
+                model.addRow(baris);
+            }
+        }
+    }
+
+    private String idPesananTerpilih() {
+        int row = tabel.getSelectedRow();
+        if (row < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih pesanan terlebih dahulu.");
+            return null;
+        }
+        int modelRow = tabel.convertRowIndexToModel(row);
+        Object id = tabel.getModel().getValueAt(modelRow, 0);
+        return id == null ? null : id.toString();
+    }
+
+    private void ubahStatusDipilih() {
+        String id = idPesananTerpilih();
+        if (id == null) {
+            return;
+        }
+        int row = tabel.convertRowIndexToModel(tabel.getSelectedRow());
+        String statusSaatIni = String.valueOf(tabel.getModel().getValueAt(row, 4));
+        String[] statuses = {"Diterima", "Dicuci", "Disetrika", "Siap Diambil",
+            "Sudah Diambil", "Dibatalkan"};
+        String statusBaru = (String) javax.swing.JOptionPane.showInputDialog(this,
+                "Pilih status pesanan:", "Ubah Status", javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null, statuses, statusSaatIni);
+        if (statusBaru == null) {
+            return;
+        }
+        if ("Dibatalkan".equals(statusBaru)
+                && javax.swing.JOptionPane.showConfirmDialog(this,
+                        "Batalkan pesanan " + id + "?", "Konfirmasi",
+                        javax.swing.JOptionPane.YES_NO_OPTION) != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+        controller.ubahStatus(id, statusBaru);
+        refreshTabel();
+    }
+
+    private void ubahStatusBayarDipilih() {
+        String id = idPesananTerpilih();
+        if (id == null) {
+            return;
+        }
+        if (javax.swing.JOptionPane.showConfirmDialog(this,
+                "Database hanya menyimpan status, bukan nominal pembayaran atau sisa tagihan. Lanjutkan?",
+                "Keterbatasan pembayaran", javax.swing.JOptionPane.YES_NO_OPTION)
+                != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+        int row = tabel.convertRowIndexToModel(tabel.getSelectedRow());
+        String statusSaatIni = String.valueOf(tabel.getModel().getValueAt(row, 5));
+        String[] statuses = {"Belum Dibayar", "Dibayar Sebagian", "Lunas"};
+        String statusBaru = (String) javax.swing.JOptionPane.showInputDialog(this,
+                "Pilih status pembayaran:", "Ubah Status Bayar",
+                javax.swing.JOptionPane.QUESTION_MESSAGE, null, statuses, statusSaatIni);
+        if (statusBaru == null) {
+            return;
+        }
+        controller.ubahPembayaran(id, statusBaru, 0);
+        refreshTabel();
+    }
+
+    private void lihatNota() {
+        String id = idPesananTerpilih();
+        if (id != null) {
+            new Nota(id).setVisible(true);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton chipDicuci;
